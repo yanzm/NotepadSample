@@ -25,13 +25,12 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import yanzm.sample.notepad.data.AppDatabase
-import yanzm.sample.notepad.data.AppDatabaseHolder
 import yanzm.sample.notepad.data.Note
 
 class EditViewModel(application: Application) : AndroidViewModel(application) {
 
     private val db: AppDatabase by lazy {
-        AppDatabaseHolder.database(application)
+        AppDatabase.getInstance(application)
     }
 
     private val _noteId = MutableLiveData<Long>(0)

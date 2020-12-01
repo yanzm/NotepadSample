@@ -20,13 +20,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import yanzm.sample.notepad.data.AppDatabase
-import yanzm.sample.notepad.data.AppDatabaseHolder
 import yanzm.sample.notepad.data.Note
 
 class ListViewModel(application: Application) : AndroidViewModel(application) {
 
     private val db: AppDatabase by lazy {
-        AppDatabaseHolder.database(application)
+        AppDatabase.getInstance(application)
     }
 
     val list: LiveData<List<Note>>

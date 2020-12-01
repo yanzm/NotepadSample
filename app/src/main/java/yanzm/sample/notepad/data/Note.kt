@@ -35,9 +35,14 @@ const val NOTE_DB_NAME = "note-database"
 
 @Entity
 data class Note(
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "body") val body: String
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0L,
+
+    @ColumnInfo(name = "title")
+    val title: String,
+
+    @ColumnInfo(name = "body")
+    val body: String
 )
 
 @Dao
@@ -61,30 +66,27 @@ interface NoteDao {
 @Database(entities = [Note::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
-}
-
-class AppDatabaseHolder {
 
     companion object {
+
+        @Volatile
         private var db: AppDatabase? = null
 
-        fun database(applicationContext: Context): AppDatabase {
-            if (db != null) {
-                return db!!
-            } else {
-                synchronized(this) {
-                    if (db != null) {
-                        return db!!
-                    }
-
-                    db = Room.databaseBuilder(
-                        applicationContext,
-                        AppDatabase::class.java,
-                        NOTE_DB_NAME
-                    ).build()
-
-                    return db!!
+        fun getInstance(context: Context): AppDatabase {
+            synchronized(this) {
+                var instance = db
+                if (instance == null) {
+                    instance = Room
+                        .databaseBuilder(
+                            context.applicationContext,
+                            AppDatabase::class.java,
+                            "sleep_history_database"
+                        )
+                        .fallbackToDestructiveMigration()
+                        .build()
+                    db = instance
                 }
+                return instance
             }
         }
     }
